@@ -39,7 +39,7 @@ class SeismicAnalyzer:
     def setup_gui(self):
         self.window.title("SeismicEduBox")
 
-        icon_image = Image.open("/Users/Chemitas/Desktop/Desk/UNAM/coding/sis3d/definitive/icono/icon.png")
+        icon_image = Image.open("/images/icon.png")
         icon_image = icon_image.resize((150, 150), Image.BICUBIC)
         self.icon_image = ImageTk.PhotoImage(icon_image)
         self.window.tk.call('wm', 'iconphoto', self.window._w, self.icon_image)
