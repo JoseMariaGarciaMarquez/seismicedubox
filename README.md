@@ -20,7 +20,7 @@ conda activate seismicedubox
 ## Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+conda env create -f seismicedubox . yaml
 ```
 ## Usage
 
