@@ -14,14 +14,10 @@ SeismicEduBox is an interactive tool for visualizing and analyzing 3D seismic da
 ### Create and activate the virtual environment
 
 ```bash
-conda env create -f seismicedubox.yaml
+conda env create -f conda/seismicedubox.yaml
 conda activate seismicedubox
 ```
-## Install Dependencies
 
-```bash
-conda env create -f seismicedubox . yaml
-```
 ## Usage
 
 1. Run the `seismicedubox.py` script.
