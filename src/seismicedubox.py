@@ -39,10 +39,13 @@ class SeismicAnalyzer:
     def setup_gui(self):
         self.window.title("SeismicEduBox")
 
-        icon_image = Image.open("/images/icon.png")
+        icon_image = Image.open("images/icono.png")
         icon_image = icon_image.resize((150, 150), Image.BICUBIC)
         self.icon_image = ImageTk.PhotoImage(icon_image)
         self.window.tk.call('wm', 'iconphoto', self.window._w, self.icon_image)
+
+        self.icon_image = ImageTk.PhotoImage(icon_image)
+        tk.Label(self.window, image=self.icon_image).grid(row=10, column=3, padx=10, pady=10)
 
         # Secciones
         frame_file = ttk.LabelFrame(self.window, text="Archivo", padding=(10, 5))
@@ -93,16 +96,17 @@ class SeismicAnalyzer:
         tk.Button(frame, text="Cargar", command=self.load_seismic_data).grid(row=0, column=3, padx=5, pady=5)
 
     def setup_spacing_section(self, frame):
-        entries_spacing = [
-            ("Espaciamiento en X", 10),
-            ("Espaciamiento en Y", 10),
-            ("Espaciamiento en Z", 10),
-        ]
+        tk.Label(frame, text="Espaciamiento en Y").grid(row=0, column=0, sticky='e', pady=5)
+        self.yspa_entry = tk.Entry(frame, width=10)
+        self.yspa_entry.grid(row=0, column=1, padx=5, pady=5)
 
-        for idx, (label, width) in enumerate(entries_spacing):
-            tk.Label(frame, text=label).grid(row=idx, column=0, sticky='e', pady=5)
-            entry = tk.Entry(frame, width=width)
-            entry.grid(row=idx, column=1, padx=5, pady=5)
+        tk.Label(frame, text="Espaciamiento en X").grid(row=1, column=0, sticky='e', pady=5)
+        self.xspa_entry = tk.Entry(frame, width=10)
+        self.xspa_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        tk.Label(frame, text="Espaciamiento en Z").grid(row=2, column=0, sticky='e', pady=5)
+        self.zspa_entry = tk.Entry(frame, width=10)
+        self.zspa_entry.grid(row=2, column=1, padx=5, pady=5)
 
     def setup_range_section(self, frame):
         entries_range = [
@@ -218,27 +222,37 @@ class SeismicAnalyzer:
         except Exception as e:
             messagebox.showerror("Error", f"Error al cargar datos sísmicos: {str(e)}")
 
+    # En la función show_previous_profile
     def show_previous_profile(self):
         if self.last_profile_type == "ILINES":
-            self.current_iline_index -= int(self.yspa_entry.get())
+            yspa_value = int(self.yspa_entry.get())
+            print('iline index',self.current_iline_index)
+            self.current_iline_index -= yspa_value
             self.show_next_iline()  # Llamar al método correspondiente
         elif self.last_profile_type == "XLINES":
-            self.current_xline_index -= int(self.xspa_entry.get())
+            xspa_value = int(self.xspa_entry.get())
+            self.current_xline_index -= xspa_value
             self.show_next_xline()  # Llamar al método correspondiente
         elif self.last_profile_type == "ZLINES":
-            self.current_depth_index -= int(self.zspa_entry.get())
+            zspa_value = int(self.zspa_entry.get())
+            self.current_depth_index -= zspa_value
             self.show_next_depth()  # Llamar al método correspondiente
 
+    # En la función show_next_profile
     def show_next_profile(self):
         if self.last_profile_type == "ILINES":
-            self.current_iline_index += int(self.yspa_entry.get())
+            yspa_value = int(self.yspa_entry.get())
+            self.current_iline_index += yspa_value
             self.show_next_iline()  # Llamar al método correspondiente
         elif self.last_profile_type == "XLINES":
-            self.current_xline_index += int(self.xspa_entry.get())
+            xspa_value = int(self.xspa_entry.get())
+            self.current_xline_index += xspa_value
             self.show_next_xline()  # Llamar al método correspondiente
         elif self.last_profile_type == "ZLINES":
-            self.current_depth_index += int(self.zspa_entry.get())
+            zspa_value = int(self.zspa_entry.get())
+            self.current_depth_index += zspa_value
             self.show_next_depth()  # Llamar al método correspondiente
+
 
 
 
