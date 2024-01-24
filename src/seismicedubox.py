@@ -75,11 +75,9 @@ class SeismicAnalyzer:
 
         self.setup_terminal_section()
 
-        tk.Button(self.window, text="Mostrar Iline", command=self.show_next_iline).grid(row=16, column=0, padx=5, pady=5)
-        tk.Button(self.window, text="Mostrar Xline", command=self.show_next_xline).grid(row=16, column=1, padx=5, pady=5)
-        tk.Button(self.window, text="Mostrar Zline", command=self.show_next_depth).grid(row=16, column=2, padx=5, pady=5)
-        tk.Button(self.window, text="Guardar", command=self.save_current_profile).grid(row=16, column=3, padx=5, pady=5)
-        tk.Button(self.window, text="Guardar Todos", command=self.save_all_profiles).grid(row=16, column=4, padx=5, pady=5)
+        tk.Button(self.window, text="Mostrar Perfil", command=self.show_current_profile).grid(row=16, column=0, padx=5, pady=5)
+        tk.Button(self.window, text="Guardar", command=self.save_current_profile).grid(row=16, column=1, padx=5, pady=5)
+        tk.Button(self.window, text="Guardar Todos", command=self.save_all_profiles).grid(row=16, column=2, padx=5, pady=5)
 
         self.setup_profile_type_section()
 
@@ -109,19 +107,54 @@ class SeismicAnalyzer:
         self.zspa_entry.grid(row=2, column=1, padx=5, pady=5)
 
     def setup_range_section(self, frame):
-        entries_range = [
-            ("Primera iline", 10),
-            ("Última iline", 10),
-            ("Primera xline", 10),
-            ("Última xline", 10),
-            ("Primera zline", 10),
-            ("Última zline", 10),
-        ]
+        tk.Label(frame, text="Primera iline").grid(row=0, column=0, sticky='e', pady=5)
+        self.first_iline = tk.Entry(frame, width=10)
+        self.first_iline.grid(row=0, column=1, padx=5, pady=5)
 
-        for idx, (label, width) in enumerate(entries_range):
-            tk.Label(frame, text=label).grid(row=idx, column=0, sticky='e', pady=5)
-            entry = tk.Entry(frame, width=width)
-            entry.grid(row=idx, column=1, padx=5, pady=5)
+        tk.Label(frame, text="Última iline").grid(row=1, column=0, sticky='e', pady=5)
+        self.last_iline = tk.Entry(frame, width=10)
+        self.last_iline.grid(row=1, column=1, padx=5, pady=5)
+
+        tk.Label(frame, text="Primera xline").grid(row=2, column=0, sticky='e', pady=5)
+        self.first_xline = tk.Entry(frame, width=10)
+        self.first_xline.grid(row=2, column=1, padx=5, pady=5)
+
+        tk.Label(frame, text="Última xline").grid(row=3, column=0, sticky='e', pady=5)
+        self.last_xline = tk.Entry(frame, width=10)
+        self.last_xline.grid(row=3, column=1, padx=5, pady=5)
+
+        tk.Label(frame, text="Profundidad inicial").grid(row=4, column=0, sticky='e', pady=5)
+        self.first_zline = tk.Entry(frame, width=10)
+        self.first_zline.grid(row=4, column=1, padx=5, pady=5)
+
+        tk.Label(frame, text="Profundidad final").grid(row=5, column=0, sticky='e', pady=5)
+        self.last_zline = tk.Entry(frame, width=10)
+        self.last_zline.grid(row=5, column=1, padx=5, pady=5)
+
+
+    def lista(self):
+        try:
+            # Obtener valores iniciales y finales de la sección de rango
+            first_iline_value = int(self.first_iline.get())
+            last_iline_value = int(self.last_iline.get())
+            first_xline_value = int(self.first_xline.get())
+            last_xline_value = int(self.last_xline.get())
+            first_zline_value = int(self.first_zline.get())
+            last_zline_value = int(self.last_zline.get())
+
+            # Obtener valores de espaciamiento de la sección de espaciamiento
+            y_spacing_value = int(self.yspa_entry.get())
+            x_spacing_value = int(self.xspa_entry.get())
+            z_spacing_value = int(self.zspa_entry.get())
+
+            # Crear listas utilizando range y los valores proporcionados
+            self.iporfiles = list(range(first_iline_value, last_iline_value + 1, int(y_spacing_value)))
+            self.xporfiles = list(range(first_xline_value, last_xline_value + 1, int(x_spacing_value)))
+            self.zporfiles = list(range(first_zline_value, last_zline_value + 1, int(z_spacing_value)))
+
+        except ValueError as e:
+            messagebox.showerror("Error", f"Error: {e}")
+
 
     def setup_folder_section(self, frame):
         tk.Label(frame, text="Carpeta destino: ").grid(row=0, column=0, sticky='e', pady=5)
@@ -224,101 +257,120 @@ class SeismicAnalyzer:
 
     # En la función show_previous_profile
     def show_previous_profile(self):
-        if self.last_profile_type == "ILINES":
-            yspa_value = int(self.yspa_entry.get())
-            print('iline index',self.current_iline_index)
-            self.current_iline_index -= yspa_value
-            self.show_next_iline()  # Llamar al método correspondiente
-        elif self.last_profile_type == "XLINES":
-            xspa_value = int(self.xspa_entry.get())
-            self.current_xline_index -= xspa_value
-            self.show_next_xline()  # Llamar al método correspondiente
-        elif self.last_profile_type == "ZLINES":
-            zspa_value = int(self.zspa_entry.get())
-            self.current_depth_index -= zspa_value
-            self.show_next_depth()  # Llamar al método correspondiente
+        self.lista()
+        try:
+            if self.last_profile_type == "ILINES":
+                self.current_iline_index -= 1
+            elif self.last_profile_type == "XLINES":
+                self.current_xline_index -= 1
+            elif self.last_profile_type == "ZLINES":
+                self.current_depth_index -= 1
+
+            # Si el índice es negativo, reiniciar al último perfil
+            if self.current_iline_index < 0:
+                self.current_iline_index = len(self.iporfiles) - 1
+            if self.current_xline_index < 0:
+                self.current_xline_index = len(self.xporfiles) - 1
+            if self.current_depth_index < 0:
+                self.current_depth_index = len(self.zporfiles) - 1
+
+            # Mostrar el valor actual
+            self.show_current_profile()
+
+        except IndexError:
+            messagebox.showwarning("Advertencia", "Ya estás en el primer perfil disponible.")
 
     # En la función show_next_profile
     def show_next_profile(self):
-        if self.last_profile_type == "ILINES":
-            yspa_value = int(self.yspa_entry.get())
-            self.current_iline_index += yspa_value
-            self.show_next_iline()  # Llamar al método correspondiente
-        elif self.last_profile_type == "XLINES":
-            xspa_value = int(self.xspa_entry.get())
-            self.current_xline_index += xspa_value
-            self.show_next_xline()  # Llamar al método correspondiente
-        elif self.last_profile_type == "ZLINES":
-            zspa_value = int(self.zspa_entry.get())
-            self.current_depth_index += zspa_value
-            self.show_next_depth()  # Llamar al método correspondiente
+        self.lista()
+        try:
+            if self.last_profile_type == "ILINES":
+                self.current_iline_index += 1
+            elif self.last_profile_type == "XLINES":
+                self.current_xline_index += 1
+            elif self.last_profile_type == "ZLINES":
+                self.current_depth_index += 1
 
+            # Si el índice supera el último perfil, reiniciar al primer perfil
+            if self.current_iline_index >= len(self.iporfiles):
+                self.current_iline_index = 0
+            if self.current_xline_index >= len(self.xporfiles):
+                self.current_xline_index = 0
+            if self.current_depth_index >= len(self.zporfiles):
+                self.current_depth_index = 0
 
+            # Mostrar el valor actual
+            self.show_current_profile()
 
+        except IndexError:
+            messagebox.showwarning("Advertencia", "Ya estás en el último perfil disponible.")
 
-    # En el método show_next_iline
-    def show_next_iline(self):
-        if self.cubo is not None:
-            plt.clf()  # Limpia la figura actual
+    def show_current_profile(self):
+        self.lista()
+        print('Tipo actual de perfil: ', self.last_profile_type)
+        try:
+            if self.last_profile_type == "ILINES":
+                current_iline_value = self.iporfiles[self.current_iline_index]
+                print(self.iporfiles)
+                print('Perfíl', current_iline_value)
+                plt.clf()  # Limpia la figura actual
+                if isinstance(self.cubo, xr.Dataset):
+                    iline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
+                    iline_label = self.cubo.iline[current_iline_value]
+                elif isinstance(self.cubo, xr.DataArray):
+                    iline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
+                    iline_label = self.cubo.iline[current_iline_value]
+                else:
+                    print("Tipo de cubo no reconocido")
+                    return
 
-            if isinstance(self.cubo, xr.Dataset):
-                iline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=self.current_iline_index, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
-                iline_label = self.cubo.iline[self.current_iline_index]
-            elif isinstance(self.cubo, xr.DataArray):
-                iline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=self.current_iline_index, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
-                iline_label = self.cubo.iline[self.current_iline_index]
-            else:
-                print("Tipo de cubo no reconocido")
-                return
+                plt.grid('grey')
+                plt.ylabel('DEPTH')
+                plt.xlabel('XLINE')
+                plt.title(f"Iline {iline_label}")
+                plt.show()
 
-            plt.grid('grey')
-            plt.ylabel('DEPTH')
-            plt.xlabel('XLINE')
-            plt.title(f"Iline {iline_label}")
-            plt.show()
+            elif self.last_profile_type == "XLINES":
+                current_xline_value = self.xporfiles[self.current_xline_index]
+                print(self.xporfiles)
+                plt.clf()  # Limpia la figura actual
+                if isinstance(self.cubo, xr.Dataset):
+                    xline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
+                    xline_label = self.cubo.xline[current_xline_value]
+                elif isinstance(self.cubo, xr.DataArray):
+                    xline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
+                    xline_label = self.cubo.xline[current_xline_value]
+                else:
+                    print("Tipo de cubo no reconocido")
+                    return
 
+                plt.grid('grey')
+                plt.ylabel('DEPTH')
+                plt.xlabel('XLINE')
+                plt.title(f"Xline {xline_label}")
+                plt.show()
 
-    # En el método show_next_xline
-    def show_next_xline(self):
-        if self.cubo is not None:
-            plt.clf()  # Limpia la figura actual
+            elif self.last_profile_type == "ZLINES":
+                current_depth_value = self.zporfiles[self.current_depth_index]
+                print(self.zporfiles)
+                plt.clf()
+                if isinstance(self.cubo, xr.Dataset):
+                    depth_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap1_combo.get())
+                    depth_label = self.cubo.depth[current_depth_value]
+                elif isinstance(self.cubo, xr.DataArray):
+                    depth_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap2_combo.get())
+                    depth_label = self.cubo.depth[current_depth_value]
+                else:
+                    print("Tipo de cubo no reconocido")
+                    return
 
-            if isinstance(self.cubo, xr.Dataset):
-                xline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=self.current_xline_index, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
-                xline_label = self.cubo.xline[self.current_xline_index]
-            elif isinstance(self.cubo, xr.DataArray):
-                xline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=self.current_xline_index, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
-                xline_label = self.cubo.xline[self.current_xline_index]
-            else:
-                print("Tipo de cubo no reconocido")
-                return
-
-            plt.grid('grey')
-            plt.ylabel('DEPTH')
-            plt.xlabel('XLINE')
-            plt.title(f"Xline {xline_label}")
-            plt.show()
-
-    def show_next_depth(self):
-        if self.cubo is not None:
-            plt.clf()
-            
-            if isinstance(self.cubo, xr.Dataset):
-                depth_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=self.current_depth_index, method='nearest').plot(cmap=self.cmap1_combo.get())
-                depth_label = self.cubo.depth[self.current_depth_index]
-            elif isinstance(self.cubo, xr.DataArray):
-                depth_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=self.current_depth_index, method='nearest').plot(cmap=self.cmap2_combo.get())
-                depth_label = self.cubo.depth[self.current_depth_index]
-            else:
-                print("Tipo de cubo no reconocido")
-                return
-
-            plt.grid('grey')
-            plt.ylabel('ILINE')
-            plt.xlabel('XLINE')
-            plt.title(f"Depth {depth_label}")
-            plt.show()
-
+                plt.grid('grey')
+                plt.ylabel('ILINE')
+                plt.xlabel('XLINE')
+                plt.title(f"Depth {depth_label}")
+                plt.show()
+        except IndexError:
+            pass
     def update_profile_type(self, value):
         self.last_profile_type = value
 

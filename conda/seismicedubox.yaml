@@ -2,6 +2,7 @@ name: seismicedubox
 channels:
   - defaults
 dependencies:
+  - python=3.10
   - numpy
   - segysak
   - pathlib
@@ -10,6 +11,6 @@ dependencies:
   - xarray
   - pillow
   - scipy
-
+  - pip
   - pip:
     - makim==1.8.2
