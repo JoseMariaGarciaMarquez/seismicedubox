@@ -16,7 +16,7 @@ class seismicplot():
             print('3D Seismic Data-', cubo_path, cubo_path.exists())
             print(get_segy_texthead(cubo_path))
             self.cubo = segy_loader(cubo_path, iline=5, xline=21, cdpx=73, cdpy=77, vert_domain='DEPTH')
-            segy_file = cubo_path
+            segy_file    = cubo_path
             print('Las dimensiones del cubo son: ', np.shape(self.cubo.data))
             print('Cubo cargado con exito 🍾')
         except Exception as e:

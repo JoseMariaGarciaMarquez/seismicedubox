@@ -190,7 +190,11 @@ class SeismicAnalyzer:
 
         lista_atributos = ['RMS', 'AI', 'FI', 'PI']
 
-        self.setup_entry_combobox("Atributo: ", lista_atributos, frame_attributes, row=0, column=0)
+        atributo_label = tk.Label(frame_attributes, text="Atributo: ")
+        atributo_label.grid(row=0, column=0)
+
+        self.atributo_combo = ttk.Combobox(frame_attributes, values=lista_atributos)
+        self.atributo_combo.grid(row=0, column=1, padx=5, pady=5, sticky='ew')
 
         tk.Label(frame_attributes, text="Colormap: ").grid(row=1, column=0, sticky='ew', pady=5)
         colores2 = ['Pastel1', 'Pastel2', 'Paired', 'Accent', 'Dark2', 'Set1', 'Set2', 'Set3', 'tab10', 'tab20', 'tab20b', 'tab20c']
@@ -198,6 +202,9 @@ class SeismicAnalyzer:
         self.cmap2_combo.grid(row=1, column=1, padx=5, pady=5, sticky='ew')
 
         tk.Button(frame_attributes, text="Calcular", command=self.calculate_attributes).grid(row=2, column=0, columnspan=2, pady=5, sticky='ew')
+
+        # Configurar la función de actualización del atributo directamente
+        self.atributo_combo.bind("<<ComboboxSelected>>", lambda event: setattr(self, 'atributo', self.atributo_combo.get()))
 
 
     def setup_entry_combobox(self, label_text, combobox_values, parent_frame, row, column):
@@ -369,8 +376,10 @@ class SeismicAnalyzer:
                 plt.xlabel('XLINE')
                 plt.title(f"Depth {depth_label}")
                 plt.show()
+
         except IndexError:
             pass
+        
     def update_profile_type(self, value):
         self.last_profile_type = value
 
@@ -414,6 +423,8 @@ class SeismicAnalyzer:
             elif self.last_profile_type == "XLINES":
                 for xline_index in range(0, len(self.cubo.xline), espaciado):
                     self.save_profile(attribute_name, folder_path, xline_index, "Xline")
+            elif self.last_profile_type == "ZLINES":
+                for 
 
             messagebox.showinfo("Guardar Todos", "Todos los perfiles guardados con éxito.")
 
@@ -441,7 +452,8 @@ class SeismicAnalyzer:
 
 
     def calculate_attributes(self):
-        atributo = self.atributo_combo.get()
+        atributo = self.atributo
+        print(atributo)
 
         if atributo == 'RMS':
             self.cubo = np.sqrt(self.cubo.data**2)
