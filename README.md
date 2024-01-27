@@ -12,10 +12,10 @@ SeismicEduBox is an interactive tool for visualizing and analyzing 3D seismic da
 
 ## Installation
 
-### Requiriments
+### Requirements
 
- - python
- - conda 
+ - Python
+ - Conda 
 
 ### Create and activate the virtual environment
 
