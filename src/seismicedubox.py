@@ -257,6 +257,7 @@ class SeismicAnalyzer:
             print(get_segy_texthead(cubo_path))
             self.cubo = segy_loader(cubo_path, iline=5, xline=21, cdpx=73, cdpy=77, vert_domain='DEPTH')
             segy_file = cubo_path
+            print(self.cubo)
             print('Las dimensiones del cubo son: ', np.shape(self.cubo.data))
             print('Cubo cargado con exito 🍾')
         except Exception as e:
@@ -315,74 +316,72 @@ class SeismicAnalyzer:
     def show_current_profile(self):
         self.lista()
         print('Tipo actual de perfil: ', self.last_profile_type)
-        try:
-            if self.last_profile_type == "ILINES":
-                current_iline_value = self.iporfiles[self.current_iline_index]
-                print(self.iporfiles)
-                print('Perfíl', current_iline_value)
-                plt.clf()
-                if isinstance(self.cubo, xr.Dataset):
-                    print('Check Y')
-                    iline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
-                    iline_label = self.cubo.iline[current_iline_value]
-                    print('Check Y')
-                elif isinstance(self.cubo, xr.DataArray):
-                    iline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
-                    iline_label = self.cubo.iline[current_iline_value]
-                else:
-                    print("Tipo de cubo no reconocido")
-                    return
 
-                plt.grid('grey')
-                plt.ylabel('DEPTH')
-                plt.xlabel('XLINE')
-                plt.title(f"Iline {iline_label}")
-                plt.show()
+        if self.last_profile_type == "ILINES":
+            current_iline_value = self.iporfiles[self.current_iline_index]
+            print(self.current_iline_index)
+            print('Perfíl', current_iline_value)
+            plt.clf()
+            if isinstance(self.cubo, xr.Dataset):
+                print('Check Y')
+                iline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
+                iline_label = self.cubo.iline[current_iline_value]
+                print('Check Y')
+            elif isinstance(self.cubo, xr.DataArray):
+                iline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
+                iline_label = self.cubo.iline[current_iline_value]
+            else:
+                print("Tipo de cubo no reconocido")
+                return
 
-            elif self.last_profile_type == "XLINES":
-                current_xline_value = self.xporfiles[self.current_xline_index]
-                print(self.xporfiles)
-                plt.clf()  # Limpia la figura actual
-                if isinstance(self.cubo, xr.Dataset):
-                    xline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
-                    xline_label = self.cubo.xline[current_xline_value]
-                    print('Check X')
-                elif isinstance(self.cubo, xr.DataArray):
-                    xline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
-                    xline_label = self.cubo.xline[current_xline_value]
-                else:
-                    print("Tipo de cubo no reconocido")
-                    return
+            plt.grid('grey')
+            plt.ylabel('DEPTH')
+            plt.xlabel('XLINE')
+            plt.title(f"Iline {iline_label}")
+            plt.show()
 
-                plt.grid('grey')
-                plt.ylabel('DEPTH')
-                plt.xlabel('ILINE')
-                plt.title(f"Xline {xline_label}")
-                plt.show()
+        elif self.last_profile_type == "XLINES":
+            current_xline_value = self.xporfiles[self.current_xline_index]
+            print(self.xporfiles)
+            plt.clf()
+            if isinstance(self.cubo, xr.Dataset):
+                xline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
+                xline_label = self.cubo.xline[current_xline_value]
+                print('Check X')
+            elif isinstance(self.cubo, xr.DataArray):
+                xline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
+                xline_label = self.cubo.xline[current_xline_value]
+            else:
+                print("Tipo de cubo no reconocido")
+                return
 
-            elif self.last_profile_type == "ZLINES":
-                current_depth_value = self.zporfiles[self.current_depth_index]
-                print(self.zporfiles)
-                plt.clf()
-                if isinstance(self.cubo, xr.Dataset):
-                    depth_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap1_combo.get())
-                    depth_label = self.cubo.depth[current_depth_value]
-                    print('Check Z')
-                elif isinstance(self.cubo, xr.DataArray):
-                    depth_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap2_combo.get())
-                    depth_label = self.cubo.depth[current_depth_value]
-                else:
-                    print("Tipo de cubo no reconocido")
-                    return
+            plt.grid('grey')
+            plt.ylabel('DEPTH')
+            plt.xlabel('ILINE')
+            plt.title(f"Xline {xline_label}")
+            plt.show()
 
-                plt.grid('grey')
-                plt.ylabel('ILINE')
-                plt.xlabel('XLINE')
-                plt.title(f"Depth {depth_label}")
-                plt.show()
+        elif self.last_profile_type == "ZLINES":
+            current_depth_value = self.zporfiles[self.current_depth_index]
+            print(self.zporfiles)
+            plt.clf()
+            if isinstance(self.cubo, xr.Dataset):
+                depth_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap1_combo.get())
+                depth_label = self.cubo.depth[current_depth_value]
+                print('Check Z')
+            elif isinstance(self.cubo, xr.DataArray):
+                depth_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap2_combo.get())
+                depth_label = self.cubo.depth[current_depth_value]
+            else:
+                print("Tipo de cubo no reconocido")
+                return
 
-        except IndexError:
-            pass
+            plt.grid('grey')
+            plt.ylabel('ILINE')
+            plt.xlabel('XLINE')
+            plt.title(f"Depth {depth_label}")
+            plt.show()
+
 
         
     def update_profile_type(self, value):
