@@ -1,16 +1,16 @@
 name: seismicedubox
 channels:
+  - conda-forge
   - defaults
 dependencies:
   - python=3.10
   - numpy
-  - segysak
   - pathlib
   - matplotlib
   - tk
   - xarray
   - pillow
   - scipy
-  - pip
+  - pip 
   - pip:
-    - makim==1.8.2
+    - segysak
