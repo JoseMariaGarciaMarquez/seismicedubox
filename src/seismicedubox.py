@@ -424,7 +424,8 @@ class SeismicAnalyzer:
                 for xline_index in range(0, len(self.cubo.xline), espaciado):
                     self.save_profile(attribute_name, folder_path, xline_index, "Xline")
             elif self.last_profile_type == "ZLINES":
-                for 
+                for zline_index in range(0, len(self.cubo.zline), espaciado):
+                    self.save_profile(attribute_name, folder_path, zline_index, "Zline")
 
             messagebox.showinfo("Guardar Todos", "Todos los perfiles guardados con éxito.")
 
