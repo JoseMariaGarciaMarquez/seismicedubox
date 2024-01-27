@@ -320,10 +320,12 @@ class SeismicAnalyzer:
                 current_iline_value = self.iporfiles[self.current_iline_index]
                 print(self.iporfiles)
                 print('Perfíl', current_iline_value)
-                plt.clf()  # Limpia la figura actual
+                plt.clf()
                 if isinstance(self.cubo, xr.Dataset):
+                    print('Check Y')
                     iline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
                     iline_label = self.cubo.iline[current_iline_value]
+                    print('Check Y')
                 elif isinstance(self.cubo, xr.DataArray):
                     iline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
                     iline_label = self.cubo.iline[current_iline_value]
@@ -344,6 +346,7 @@ class SeismicAnalyzer:
                 if isinstance(self.cubo, xr.Dataset):
                     xline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
                     xline_label = self.cubo.xline[current_xline_value]
+                    print('Check X')
                 elif isinstance(self.cubo, xr.DataArray):
                     xline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
                     xline_label = self.cubo.xline[current_xline_value]
@@ -364,6 +367,7 @@ class SeismicAnalyzer:
                 if isinstance(self.cubo, xr.Dataset):
                     depth_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap1_combo.get())
                     depth_label = self.cubo.depth[current_depth_value]
+                    print('Check Z')
                 elif isinstance(self.cubo, xr.DataArray):
                     depth_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap2_combo.get())
                     depth_label = self.cubo.depth[current_depth_value]
@@ -379,6 +383,7 @@ class SeismicAnalyzer:
 
         except IndexError:
             pass
+
         
     def update_profile_type(self, value):
         self.last_profile_type = value
@@ -415,17 +420,16 @@ class SeismicAnalyzer:
         if self.cubo is not None:
             attribute_name = self.atributo_combo.get()
             folder_path = self.folder_entry.get()  # Obtener la ruta de la carpeta desde la entrada de la GUI
-            espaciado = int(self.xspa_entry.get()) if self.last_profile_type == "ILINES" else int(self.yspa_entry.get())
 
             if self.last_profile_type == "ILINES":
-                for iline_index in range(0, len(self.cubo.iline), espaciado):
-                    self.save_profile(attribute_name, folder_path, iline_index, "Iline")
+                for porfil in self.iporfiles:
+                    self.save_profile(attribute_name, folder_path, porfil, 'Iline')
             elif self.last_profile_type == "XLINES":
-                for xline_index in range(0, len(self.cubo.xline), espaciado):
-                    self.save_profile(attribute_name, folder_path, xline_index, "Xline")
+                for porfil in self.xporfiles:
+                    self.save_profile(attribute_name, folder_path, porfil, 'Xline')
             elif self.last_profile_type == "ZLINES":
-                for zline_index in range(0, len(self.cubo.zline), espaciado):
-                    self.save_profile(attribute_name, folder_path, zline_index, "Zline")
+                for porfil in self.zporfiles:
+                    self.save_profile(attribute_name, folder_path, porfil, "DEPTH")
 
             messagebox.showinfo("Guardar Todos", "Todos los perfiles guardados con éxito.")
 
@@ -485,4 +489,3 @@ class SeismicAnalyzer:
 
 if __name__ == '__main__':
     seismic_analyzer = SeismicAnalyzer()
-
