@@ -356,7 +356,7 @@ class SeismicAnalyzer:
 
                 plt.grid('grey')
                 plt.ylabel('DEPTH')
-                plt.xlabel('XLINE')
+                plt.xlabel('ILINE')
                 plt.title(f"Xline {xline_label}")
                 plt.show()
 
