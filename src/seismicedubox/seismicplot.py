@@ -10,7 +10,7 @@ class seismicplot():
         self.cubo = None
 
 
-    def load_segy(self):
+    def load_seismic_data(self):
         try:
             cubo_path = pathlib.Path(self.cubo_entry.get())
             print('3D Seismic Data-', cubo_path, cubo_path.exists())

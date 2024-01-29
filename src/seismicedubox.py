@@ -319,13 +319,11 @@ class SeismicAnalyzer:
 
         if self.last_profile_type == "ILINES":
             current_iline_value = self.iporfiles[self.current_iline_index]
-            print(self.current_iline_index)
-            print('Perfíl', current_iline_value)
+            print('Mostrando Iline #{}'.format(current_iline_value))
             plt.clf()
             if isinstance(self.cubo, xr.Dataset):
                 iline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
                 iline_label = current_iline_value
-                print('Check Y')
             elif isinstance(self.cubo, xr.DataArray):
                 iline_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(iline=current_iline_value, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
                 iline_label = current_iline_value
@@ -341,7 +339,7 @@ class SeismicAnalyzer:
 
         elif self.last_profile_type == "XLINES":
             current_xline_value = self.xporfiles[self.current_xline_index]
-            print(self.xporfiles)
+            print('Mostrando Xline #{}'.fornmat(current_xline_value))
             plt.clf()
             if isinstance(self.cubo, xr.Dataset):
                 xline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
@@ -361,12 +359,11 @@ class SeismicAnalyzer:
 
         elif self.last_profile_type == "ZLINES":
             current_depth_value = self.zporfiles[self.current_depth_index]
-            print(self.zporfiles)
+            print('Mostrando profundiad de {}[m]'.format(current_depth_value))
             plt.clf()
             if isinstance(self.cubo, xr.Dataset):
                 depth_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap1_combo.get())
                 depth_label = current_depth_value
-                print('Check Z')
             elif isinstance(self.cubo, xr.DataArray):
                 depth_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(depth=current_depth_value, method='nearest').plot(cmap=self.cmap2_combo.get())
                 depth_label = current_depth_value
