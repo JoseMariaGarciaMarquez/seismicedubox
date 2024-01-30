@@ -334,12 +334,11 @@ class SeismicAnalyzer:
             plt.grid('grey')
             plt.ylabel('DEPTH')
             plt.xlabel('XLINE')
-            plt.title(f"Iline {iline_label}")
             plt.show()
 
         elif self.last_profile_type == "XLINES":
             current_xline_value = self.xporfiles[self.current_xline_index]
-            print('Mostrando Xline #{}'.fornmat(current_xline_value))
+            print('Mostrando Xline #{}'.format(current_xline_value))
             plt.clf()
             if isinstance(self.cubo, xr.Dataset):
                 xline_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(xline=current_xline_value, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
@@ -354,7 +353,6 @@ class SeismicAnalyzer:
             plt.grid('grey')
             plt.ylabel('DEPTH')
             plt.xlabel('ILINE')
-            plt.title(f"Xline {xline_label}")
             plt.show()
 
         elif self.last_profile_type == "ZLINES":
@@ -374,7 +372,6 @@ class SeismicAnalyzer:
             plt.grid('grey')
             plt.ylabel('ILINE')
             plt.xlabel('XLINE')
-            plt.title(f"Depth {depth_label}")
             plt.show()
 
 
@@ -417,7 +414,7 @@ class SeismicAnalyzer:
 
             if self.last_profile_type == "ILINES":
                 for porfil in self.iporfiles:
-                    self.save_profile(attribute_name, folder_path, porfil, 'Iline')
+                   self.save_profile (attribute_name, folder_path, porfil, 'Iline')
             elif self.last_profile_type == "XLINES":
                 for porfil in self.xporfiles:
                     self.save_profile(attribute_name, folder_path, porfil, 'Xline')
@@ -432,21 +429,40 @@ class SeismicAnalyzer:
 
         if isinstance(self.cubo, xr.Dataset):
             line_profile = self.cubo.data.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(**{line_type.lower(): index}, method='nearest').plot(yincrease=False, cmap=self.cmap1_combo.get())
-            line_label = getattr(self.cubo, line_type.lower())[index]
+            if self.last_profile_type == "ILINES":
+                plt.grid('grey')
+                plt.ylabel('DEPTH')
+                plt.xlabel('XLINE')
+            elif self.last_profile_type == "XLINES":
+                plt.grid('grey')
+                plt.ylabel('DEPTH')
+                plt.xlabel('ILINE')
+            elif self.last_profile_type == "ZLINES":
+                plt.grid('grey')
+                plt.ylabel('ILINE')
+                plt.xlabel('XLINE')
         elif isinstance(self.cubo, xr.DataArray):
             line_profile = self.cubo.transpose('depth', 'iline', 'xline', transpose_coords=True).sel(**{line_type.lower(): index}, method='nearest').plot(yincrease=False, cmap=self.cmap2_combo.get())
-            line_label = getattr(self.cubo, line_type.lower())[index]
+            if self.last_profile_type == "ILINES":
+                plt.grid('grey')
+                plt.ylabel('DEPTH')
+                plt.xlabel('XLINE')
+            elif self.last_profile_type == "XLINES":
+                plt.grid('grey')
+                plt.ylabel('DEPTH')
+                plt.xlabel('ILINE')
+            elif self.last_profile_type == "ZLINES":
+                plt.grid('grey')
+                plt.ylabel('ILINE')
+                plt.xlabel('XLINE')
         else:
             print("Tipo de cubo no reconocido")
             return
 
-        plt.grid('grey')
-        plt.ylabel('DEPTH')
-        plt.xlabel(line_type)
-        plt.title(f"{line_type} {line_label}")
 
         file_path = os.path.join(folder_path, f"profile_{attribute_name}_{line_type.lower()}{index}.png")
         plt.savefig(file_path)
+
 
 
 
