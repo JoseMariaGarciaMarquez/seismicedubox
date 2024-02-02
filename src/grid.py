@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import griddata
 
 # Leer datos desde el archivo CSV
-df = pd.read_csv('docs/estructura.csv')
+df = pd.read_csv('docs/estructura2.csv')
 
 # Extraer las columnas
 prof = np.array(df['PROFUNDIDAD'])

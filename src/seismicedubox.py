@@ -7,6 +7,7 @@ import subprocess
 import matplotlib.pyplot as plt
 import tkinter as tk
 import xarray as xr
+import csv
 
 from segysak.segy import get_segy_texthead, segy_loader
 from PIL import Image, ImageTk
@@ -28,6 +29,9 @@ class TextRedirector:
 
 class SeismicAnalyzer:
     def __init__(self):
+    # Variables globales para el objeto de la gráfica
+        self.ax = None
+        self.fig = None
         self.cubo = None
         self.current_iline_index = 0
         self.current_xline_index = 0
@@ -234,6 +238,30 @@ class SeismicAnalyzer:
 
 
 
+    def on_click(self, event):
+        x, y = event.xdata, event.ydata
+        if x is not None and y is not None:
+            print(f"Coordenadas del clic: {x:.2f}, {y:.2f}")
+            self.save_to_csv(x, y)
+
+    def save_to_csv(self, x, y):
+        with open('estructura.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            # Encabezados
+            if file.tell() == 0:  # Solo escribe encabezados si el archivo está vacío
+                writer.writerow(['PROFUNDIDAD', 'XLINES', 'ILINES'])
+            if self.last_profile_type == "ILINES":
+                writer.writerow([y, x,  self.iporfiles[self.current_iline_index]])
+            elif self.last_profile_type == "XLINES":
+                writer.writerow([y,  self.xporfiles[self.current_xline_index], x])
+            elif self.last_profile_type == "ZLINES":
+                writer.writerow([ self.zporfiles[self.current_depth_index], x, y])
+            else:
+                print("Tipo de perfil no reconocido")
+                return
+
+            print("Coordenadas guardadas en 'estructura.csv'")
+
     def browse_file(self):
         try:
             file_path = filedialog.askopenfilename()
@@ -334,6 +362,12 @@ class SeismicAnalyzer:
             plt.grid('grey')
             plt.ylabel('DEPTH')
             plt.xlabel('XLINE')
+
+            # Almacena el objeto de la gráfica y conecta el evento de clic
+            self.fig = plt.gcf()
+            self.ax = plt.gca()
+            self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+
             plt.show()
 
         elif self.last_profile_type == "XLINES":
@@ -353,6 +387,12 @@ class SeismicAnalyzer:
             plt.grid('grey')
             plt.ylabel('DEPTH')
             plt.xlabel('ILINE')
+
+            # Almacena el objeto de la gráfica y conecta el evento de clic
+            self.fig = plt.gcf()
+            self.ax = plt.gca()
+            self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+
             plt.show()
 
         elif self.last_profile_type == "ZLINES":
@@ -372,7 +412,14 @@ class SeismicAnalyzer:
             plt.grid('grey')
             plt.ylabel('ILINE')
             plt.xlabel('XLINE')
+
+            # Almacena el objeto de la gráfica y conecta el evento de clic
+            self.fig = plt.gcf()
+            self.ax = plt.gca()
+            self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+
             plt.show()
+            
 
 
         
@@ -391,6 +438,12 @@ class SeismicAnalyzer:
         canvas_widget_widget = canvas_widget.get_tk_widget()
         canvas_widget_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         canvas_widget.draw()
+
+        # Almacena el objeto de la gráfica y conecta el evento de clic
+        self.fig = fig
+        self.ax = ax
+        self.fig.canvas.mpl_connect('button_press_event', self.on_click)
+
 
     def save_current_profile(self):
         if self.cubo is not None:
