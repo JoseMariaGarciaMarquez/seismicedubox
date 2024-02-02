@@ -426,25 +426,6 @@ class SeismicAnalyzer:
     def update_profile_type(self, value):
         self.last_profile_type = value
 
-    def show_profile(self, profile, profile_type, canvas):
-        canvas.delete("all")
-        fig, ax = plt.subplots(figsize=(4, 3), dpi=100)
-        ax.plot(profile.transpose())
-        ax.set_title(f"Seismic Profile ({profile_type})")
-        ax.set_xlabel("Sample")
-        ax.set_ylabel("Amplitude")
-
-        canvas_widget = FigureCanvasTkAgg(fig, master=canvas)
-        canvas_widget_widget = canvas_widget.get_tk_widget()
-        canvas_widget_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        canvas_widget.draw()
-
-        # Almacena el objeto de la gráfica y conecta el evento de clic
-        self.fig = fig
-        self.ax = ax
-        self.fig.canvas.mpl_connect('button_press_event', self.on_click)
-
-
     def save_current_profile(self):
         if self.cubo is not None:
             attribute_name = self.atributo_combo.get()
