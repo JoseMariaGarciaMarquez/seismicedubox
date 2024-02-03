@@ -63,7 +63,7 @@ diff_zi = zi2 - zi1
 # Crear un mapa de isopacas en 2D
 plt.figure(figsize=(10, 6))
 contour = plt.contourf(xi1, yi1, diff_zi, levels=20, cmap='viridis')
-plt.colorbar(contour, label='Diferencia de Profundidad')
+plt.colorbar(contour, label='Grosor[m]')
 
 # Establecer etiquetas y título
 plt.xlabel('XLINES')
