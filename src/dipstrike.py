@@ -108,7 +108,7 @@ for ii in range(len(c)):
     dips.append(dip)
 
 # Crear el gráfico de histogramas
-fig, axs = plt.subplots(2, figsize=(7, 4), sharex=False, sharey=True, dpi=200)
+fig, axs = plt.subplots(2, figsize=(9, 5), sharex=False, sharey=True, dpi=200)
 fig.suptitle('Frecuencia de los rumbos y echados de planos formados a partir de tríadas de puntos', y=1.05, fontsize=15)
 
 axs[0].hist(strikes, bins=36, color='blue')

@@ -178,10 +178,7 @@ class SeismicAnalyzer:
         self.cmap2_combo.grid(row=1, column=1, padx=5, pady=5, sticky='ew')
         self.cmap2_combo.set(colores2[0])  # Set default value
 
-    def setup_terminal_section(self):
-        self.terminal_text = tk.Text(self.window, wrap='word', height=10, width=85)
-        self.terminal_text.grid(row=5, column=3, rowspan=10, padx=10, pady=10)
-        sys.stdout = TextRedirector(self.terminal_text, "stdout")
+
 
     def setup_profile_type_section(self):
         self.profile_type_var = tk.StringVar(value="ILINES")
@@ -525,10 +522,7 @@ class SeismicAnalyzer:
 
         if atributo == 'RMS':
             self.cubo = np.sqrt(self.cubo.data**2)
-        elif atributo == 'AI':
-            analytic_signal = hilbert(self.cubo.data)
-            new_data = np.abs(analytic_signal)
-            self.cubo['data'] = (['depth', 'iline', 'xline'], new_data)
+
         elif atributo == 'FI':
             analytic_signal = hilbert(self.cubo.data)
             instantaneous_phase = np.unwrap(np.angle(analytic_signal))
