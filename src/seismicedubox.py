@@ -86,10 +86,17 @@ class SeismicAnalyzer:
         self.setup_profile_type_section()
 
         self.setup_attributes_section()
-
+        
+        self.make_gui_responsive()
 
         self.window.mainloop()
 
+        
+
+    def make_gui_responsive(self):
+        for i in range(4):
+            self.window.grid_rowconfigure(i, weight=1)
+            self.window.grid_columnconfigure(i, weight=1)
     def setup_file_section(self, frame):
         tk.Label(frame, text="Cubo sísmico: ").grid(row=0, column=0, sticky='e', pady=5)
         self.cubo_entry = tk.Entry(frame, width=30)
