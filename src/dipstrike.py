@@ -137,4 +137,4 @@ ax1.set_theta_direction(-1)
 ax1.grid(True)
 
 fig.tight_layout()
-plt.show() 
+plt.show()
